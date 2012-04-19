@@ -389,7 +389,7 @@ public class ActionBarContextView extends AbsActionBarView implements AnimatorLi
     }
 
     private Animator makeInAnimation() {
-        mClose.setTranslationX(-mClose.getWidth() -
+        mClose.supportSetTranslationX(-mClose.getWidth() -
                 ((MarginLayoutParams) mClose.getLayoutParams()).leftMargin);
         ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(mClose, "translationX", 0);
         buttonAnimator.setDuration(200);

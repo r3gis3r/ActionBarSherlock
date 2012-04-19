@@ -68,9 +68,8 @@ public class ActionMenuView extends IcsLinearLayout implements MenuBuilder.ItemI
     public boolean isExpandedFormat() {
         return mFormatItems;
     }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    
+    public void supportOnConfigurationChanged(Configuration newConfig) {
         if (IS_FROYO) {
             super.onConfigurationChanged(newConfig);
         }
@@ -80,6 +79,11 @@ public class ActionMenuView extends IcsLinearLayout implements MenuBuilder.ItemI
             mPresenter.hideOverflowMenu();
             mPresenter.showOverflowMenu();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        supportOnConfigurationChanged(newConfig);
     }
 
     @Override

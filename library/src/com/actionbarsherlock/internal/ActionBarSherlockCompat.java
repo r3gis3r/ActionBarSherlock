@@ -34,6 +34,7 @@ import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.internal.app.ActionBarImpl;
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
 import com.actionbarsherlock.internal.view.StandaloneActionMode;
 import com.actionbarsherlock.internal.view.menu.ActionMenuPresenter;
 import com.actionbarsherlock.internal.view.menu.MenuBuilder;
@@ -47,7 +48,7 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-@ActionBarSherlock.Implementation(api = 7)
+@ActionBarSherlock.Implementation(api = 4)
 public class ActionBarSherlockCompat extends ActionBarSherlock implements MenuBuilder.Callback, com.actionbarsherlock.view.Window.Callback, MenuPresenter.Callback, android.view.MenuItem.OnMenuItemClickListener {
     /** Window features which are enabled by default. */
     protected static final int DEFAULT_FEATURES = 0;
@@ -424,7 +425,7 @@ public class ActionBarSherlockCompat extends ActionBarSherlock implements MenuBu
 
         boolean result = false;
         if (keyCode == KeyEvent.KEYCODE_MENU && isReservingOverflow()) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.isLongPress()) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && UtilityWrapper.getInstance().isLongPressEvent(event)) {
                 mMenuKeyIsLongPress = true;
             } else if (event.getAction() == KeyEvent.ACTION_UP) {
                 if (!mMenuKeyIsLongPress) {

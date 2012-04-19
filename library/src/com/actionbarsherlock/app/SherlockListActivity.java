@@ -124,7 +124,7 @@ public abstract class SherlockListActivity extends ListActivity implements OnCre
     }
 
     public void supportInvalidateOptionsMenu() {
-        invalidateOptionsMenu();
+        getSherlock().dispatchInvalidateOptionsMenu();
     }
 
     @Override

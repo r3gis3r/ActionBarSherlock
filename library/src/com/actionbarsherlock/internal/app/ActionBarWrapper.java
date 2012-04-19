@@ -3,6 +3,7 @@ package com.actionbarsherlock.internal.app;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.widget.SpinnerAdapter;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+@TargetApi(14)
 public class ActionBarWrapper extends ActionBar implements android.app.ActionBar.OnNavigationListener, android.app.ActionBar.OnMenuVisibilityListener {
     private final Activity mActivity;
     private final android.app.ActionBar mActionBar;

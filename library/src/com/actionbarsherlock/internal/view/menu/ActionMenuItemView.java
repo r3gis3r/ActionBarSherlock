@@ -16,8 +16,8 @@
 
 package com.actionbarsherlock.internal.view.menu;
 
-import java.util.HashSet;
-import java.util.Set;
+import static com.actionbarsherlock.internal.ResourcesCompat.getResources_getBoolean;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -34,11 +34,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.actionbarsherlock.R;
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
 import com.actionbarsherlock.internal.view.View_HasStateListenerSupport;
 import com.actionbarsherlock.internal.view.View_OnAttachStateChangeListener;
 import com.actionbarsherlock.internal.widget.CapitalizingButton;
 
-import static com.actionbarsherlock.internal.ResourcesCompat.getResources_getBoolean;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @hide
@@ -59,6 +62,8 @@ public class ActionMenuItemView extends LinearLayout
     private int mMinWidth;
 
     private final Set<View_OnAttachStateChangeListener> mListeners = new HashSet<View_OnAttachStateChangeListener>();
+    private static Method superOnHoverEventMethod;
+    private static Method superOnPopulateAccessibilityEventMethod;
 
     public ActionMenuItemView(Context context) {
         this(context, null);
@@ -71,6 +76,15 @@ public class ActionMenuItemView extends LinearLayout
     public ActionMenuItemView(Context context, AttributeSet attrs, int defStyle) {
         //TODO super(context, attrs, defStyle);
         super(context, attrs);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
+                && superOnPopulateAccessibilityEventMethod == null) {
+            Class<?> cls = getClass();
+            superOnPopulateAccessibilityEventMethod = UtilityWrapper.safelyGetSuperclassMethod(cls,
+                    "onPopulateAccessibilityEvent");
+            superOnHoverEventMethod = UtilityWrapper.safelyGetSuperclassMethod(cls, "onHoverEvent");
+        }
+        
         mAllowTextWithIcon = getResources_getBoolean(context,
                 R.bool.abs__config_allowActionMenuItemTextWithIcon);
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -209,14 +223,13 @@ public class ActionMenuItemView extends LinearLayout
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        onPopulateAccessibilityEvent(event);
+        supportOnPopulateAccessibilityEvent(event);
         return true;
     }
-
-    @Override
-    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            super.onPopulateAccessibilityEvent(event);
+    
+    public void supportOnPopulateAccessibilityEvent(AccessibilityEvent event) {
+        if (superOnPopulateAccessibilityEventMethod != null) {
+            UtilityWrapper.safelyInvokeMethod(superOnPopulateAccessibilityEventMethod, this, event);
         }
         final CharSequence cdesc = getContentDescription();
         if (!TextUtils.isEmpty(cdesc)) {
@@ -225,10 +238,15 @@ public class ActionMenuItemView extends LinearLayout
     }
 
     @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        supportOnPopulateAccessibilityEvent(event);
+    }
+
+    @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         // Don't allow children to hover; we want this to be treated as a single component.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            return onHoverEvent(event);
+        if (superOnHoverEventMethod != null ) {
+            UtilityWrapper.safelyInvokeMethod(superOnHoverEventMethod, this, event);
         }
         return false;
     }

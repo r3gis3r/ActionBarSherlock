@@ -220,7 +220,7 @@ public class ScrollingTabContainerView extends NineHorizontalScrollView
         }
         if (visibility == VISIBLE) {
             if (getVisibility() != VISIBLE) {
-                setAlpha(0);
+                supportSetAlpha(0);
             }
             ObjectAnimator anim = ObjectAnimator.ofFloat(this, "alpha", 1);
             anim.setDuration(FADE_DURATION);

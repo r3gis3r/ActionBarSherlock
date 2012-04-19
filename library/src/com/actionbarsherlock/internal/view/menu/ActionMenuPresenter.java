@@ -35,6 +35,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import com.actionbarsherlock.R;
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
 import com.actionbarsherlock.internal.view.View_HasStateListenerSupport;
 import com.actionbarsherlock.internal.view.View_OnAttachStateChangeListener;
 import com.actionbarsherlock.internal.view.menu.ActionMenuView.ActionMenuChildView;
@@ -136,7 +137,7 @@ public class ActionMenuPresenter extends BaseMenuPresenter
 
     private static class HasPermanentMenuKey {
         public static boolean get(Context context) {
-            return ViewConfiguration.get(context).hasPermanentMenuKey();
+            return UtilityWrapper.getInstance().hasPermanentMenuKey(ViewConfiguration.get(context));
         }
     }
 

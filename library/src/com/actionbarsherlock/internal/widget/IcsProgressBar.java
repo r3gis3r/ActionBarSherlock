@@ -32,7 +32,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -49,6 +48,10 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 import android.widget.RemoteViews.RemoteView;
+
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -184,7 +187,6 @@ import android.widget.RemoteViews.RemoteView;
  */
 @RemoteView
 public class IcsProgressBar extends View {
-    private static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private static final int MAX_LEVEL = 10000;
     private static final int ANIMATION_RESOLUTION = 200;
     private static final int TIMEOUT_SEND_ACCESSIBILITY_EVENT = 200;
@@ -256,6 +258,7 @@ public class IcsProgressBar extends View {
 
     private AccessibilityManager mAccessibilityManager;
     private AccessibilityEventSender mAccessibilityEventSender;
+    private static Method superOnVisibilityChangedMethod;
 
     /**
      * Create a new progress bar with range 0...100 and initial progress of 0.
@@ -278,6 +281,10 @@ public class IcsProgressBar extends View {
      */
     public IcsProgressBar(Context context, AttributeSet attrs, int defStyle, int styleRes) {
         super(context, attrs, defStyle);
+        if(superOnVisibilityChangedMethod == null) {
+            superOnVisibilityChangedMethod = UtilityWrapper.safelyGetSuperclassMethod(getClass(), "onVisibilityChanged");
+        }
+        
         mUiThreadId = Thread.currentThread().getId();
         initProgressBar();
 
@@ -585,9 +592,10 @@ public class IcsProgressBar extends View {
 
     @Override
     public void jumpDrawablesToCurrentState() {
-        super.jumpDrawablesToCurrentState();
-        if (mProgressDrawable != null) mProgressDrawable.jumpToCurrentState();
-        if (mIndeterminateDrawable != null) mIndeterminateDrawable.jumpToCurrentState();
+        UtilityWrapper utils = UtilityWrapper.getInstance();
+        utils.jumpDrawablesToCurrentState(this);
+        if (mProgressDrawable != null) utils.jumpToCurrentState(mProgressDrawable);
+        if (mIndeterminateDrawable != null) utils.jumpToCurrentState(mIndeterminateDrawable);
     }
 
     @Override
@@ -917,8 +925,9 @@ public class IcsProgressBar extends View {
 
     @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-
+        if(superOnVisibilityChangedMethod != null) {
+            UtilityWrapper.safelyInvokeMethod(superOnVisibilityChangedMethod, this, changedView, visibility);
+        }
         if (mIndeterminate) {
             // let's be nice with the UI thread
             if (visibility == GONE || visibility == INVISIBLE) {
@@ -1048,13 +1057,9 @@ public class IcsProgressBar extends View {
         dw += getPaddingLeft() + getPaddingRight();
         dh += getPaddingTop() + getPaddingBottom();
 
-        if (IS_HONEYCOMB) {
-            setMeasuredDimension(View.resolveSizeAndState(dw, widthMeasureSpec, 0),
-                    View.resolveSizeAndState(dh, heightMeasureSpec, 0));
-        } else {
-            setMeasuredDimension(View.resolveSize(dw, widthMeasureSpec),
-                    View.resolveSize(dh, heightMeasureSpec));
-        }
+        UtilityWrapper utils = UtilityWrapper.getInstance();
+        setMeasuredDimension(utils.resolveSizeAndState(dw, widthMeasureSpec, 0),
+                utils.resolveSizeAndState(dh, heightMeasureSpec, 0));
     }
 
     @Override
@@ -1158,14 +1163,14 @@ public class IcsProgressBar extends View {
         // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
         super.onDetachedFromWindow();
     }
-
+/* ------- TODO - implement that
     @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         event.setItemCount(mMax);
         event.setCurrentItemIndex(mProgress);
     }
-
+*/
     /**
      * Schedule a command for sending an accessibility event.
      * </br>

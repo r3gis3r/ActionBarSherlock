@@ -55,7 +55,7 @@ public class IcsLinearLayout extends NineLinearLayout {
 
         TypedArray a = context.obtainStyledAttributes(attrs, /*com.android.internal.R.styleable.*/LinearLayout);
 
-        setDividerDrawable(a.getDrawable(/*com.android.internal.R.styleable.*/LinearLayout_divider));
+        supportSetDividerDrawable(a.getDrawable(/*com.android.internal.R.styleable.*/LinearLayout_divider));
         mShowDividers = a.getInt(/*com.android.internal.R.styleable.*/LinearLayout_showDividers, SHOW_DIVIDER_NONE);
         mDividerPadding = a.getDimensionPixelSize(/*com.android.internal.R.styleable.*/LinearLayout_dividerPadding, 0);
 
@@ -84,13 +84,8 @@ public class IcsLinearLayout extends NineLinearLayout {
     public int getShowDividers() {
         return mShowDividers;
     }
-
-    /**
-     * Set a drawable to be used as a divider between items.
-     * @param divider Drawable that will divide each item.
-     * @see #setShowDividers(int)
-     */
-    public void setDividerDrawable(Drawable divider) {
+    
+    public void supportSetDividerDrawable(Drawable divider) {
         if (divider == mDivider) {
             return;
         }
@@ -104,6 +99,15 @@ public class IcsLinearLayout extends NineLinearLayout {
         }
         setWillNotDraw(divider == null);
         requestLayout();
+    }
+
+    /**
+     * Set a drawable to be used as a divider between items.
+     * @param divider Drawable that will divide each item.
+     * @see #setShowDividers(int)
+     */
+    public void setDividerDrawable(Drawable divider) {
+        supportSetDividerDrawable(divider);
     }
 
     /**
@@ -199,7 +203,7 @@ public class IcsLinearLayout extends NineLinearLayout {
             if (child == null) {
                 bottom = getHeight() - getPaddingBottom() - mDividerHeight;
             } else {
-                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                //final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 bottom = child.getBottom()/* + lp.bottomMargin*/;
             }
             drawHorizontalDivider(canvas, bottom);
@@ -226,7 +230,7 @@ public class IcsLinearLayout extends NineLinearLayout {
             if (child == null) {
                 right = getWidth() - getPaddingRight() - mDividerWidth;
             } else {
-                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                //final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 right = child.getRight()/* + lp.rightMargin*/;
             }
             drawVerticalDivider(canvas, right);

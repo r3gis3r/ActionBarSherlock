@@ -23,15 +23,18 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Adapter;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 
 /**
@@ -874,7 +877,7 @@ public abstract class IcsAdapterView<T extends Adapter> extends ViewGroup {
         }
         return false;
     }
-
+/* ------- TODO : implement that --------- 
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         if (super.onRequestSendAccessibilityEvent(child, event)) {
@@ -922,6 +925,7 @@ public abstract class IcsAdapterView<T extends Adapter> extends ViewGroup {
         }
         return false;
     }
+    */
 
     @Override
     protected boolean canAnimate() {

@@ -1,16 +1,12 @@
 package com.actionbarsherlock.internal.widget;
 
-import com.actionbarsherlock.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -23,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+
+import com.actionbarsherlock.R;
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
 
 /**
  * A proxy between pre- and post-Honeycomb implementations of this class.
@@ -86,12 +85,7 @@ public class IcsListPopupWindow {
 
     public IcsListPopupWindow(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mContext = context;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            Context wrapped = new ContextThemeWrapper(context, defStyleRes);
-            mPopup = new PopupWindow(wrapped, attrs, defStyleAttr);
-        } else {
-            mPopup = new PopupWindow(context, attrs, defStyleAttr, defStyleRes);
-        }
+        mPopup = UtilityWrapper.getInstance().buildPopupWindow(context, attrs, defStyleAttr, defStyleRes);
         mPopup.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
     }
 

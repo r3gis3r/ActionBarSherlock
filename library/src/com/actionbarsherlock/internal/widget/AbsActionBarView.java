@@ -65,16 +65,12 @@ public abstract class AbsActionBarView extends NineViewGroup {
         super(context, attrs, defStyle);
         mContext = context;
     }
-
-    /*
-     * Must be public so we can dispatch pre-2.2 via ActionBarImpl.
-     */
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    
+    public void supportOnConfigurationChanged(Configuration newConfig) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             super.onConfigurationChanged(newConfig);
         } else if (mMenuView != null) {
-            mMenuView.onConfigurationChanged(newConfig);
+            mMenuView.supportOnConfigurationChanged(newConfig);
         }
 
         // Action bar can change size on configuration changes.
@@ -90,6 +86,14 @@ public abstract class AbsActionBarView extends NineViewGroup {
         if (mActionMenuPresenter != null) {
             mActionMenuPresenter.onConfigurationChanged(newConfig);
         }
+    }
+
+    /*
+     * Must be public so we can dispatch pre-2.2 via ActionBarImpl.
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        supportOnConfigurationChanged(newConfig);
     }
 
     /**
@@ -137,9 +141,9 @@ public abstract class AbsActionBarView extends NineViewGroup {
         }
         if (visibility == VISIBLE) {
             if (getVisibility() != VISIBLE) {
-                setAlpha(0);
+                supportSetAlpha(0);
                 if (mSplitView != null && mMenuView != null) {
-                    mMenuView.setAlpha(0);
+                    mMenuView.supportSetAlpha(0);
                 }
             }
             ObjectAnimator anim = ObjectAnimator.ofFloat(this, "alpha", 1);
