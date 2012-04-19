@@ -18,6 +18,7 @@ package com.actionbarsherlock.widget;
 
 import android.os.Build;
 import com.actionbarsherlock.R;
+import com.actionbarsherlock.internal.utils.UtilityWrapper;
 import com.actionbarsherlock.internal.widget.IcsLinearLayout;
 import com.actionbarsherlock.internal.widget.IcsListPopupWindow;
 import com.actionbarsherlock.view.ActionProvider;
@@ -614,7 +615,7 @@ class ActivityChooserView extends ViewGroup implements ActivityChooserModelClien
 
     private static class SetActivated {
         public static void invoke(View view, boolean activated) {
-            view.setActivated(activated);
+            UtilityWrapper.getInstance().viewSetActivated(view, activated);
         }
     }
 
