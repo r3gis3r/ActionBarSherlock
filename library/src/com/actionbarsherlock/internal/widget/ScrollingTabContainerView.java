@@ -202,9 +202,9 @@ public class ScrollingTabContainerView extends NineHorizontalScrollView
         return spinner;
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    // TODO - plug this back ton onConfigurationChanged
+    protected void supportOnConfigurationChanged(Configuration newConfig) {
+        super.supportOnConfigurationChanged(newConfig);
 
         // Action bar can change size on configuration changes.
         // Reread the desired height from the theme-specified style.
